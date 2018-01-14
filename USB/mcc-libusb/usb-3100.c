@@ -457,8 +457,9 @@ int usbWriteMemory_USB31XX(hid_device *hid, uint16_t address, uint8_t count, uin
     uint8_t reportID;
     uint8_t address[2];
     uint8_t count;
-    uint8_t data[count];
+    uint8_t data[60];
   } arg;
+  size_t argsize = (count+4)*sizeof(uint8_t);
 
   if (address <= 0x00ff) {  // EEPROM
     if (count > 59) {
@@ -485,7 +486,7 @@ int usbWriteMemory_USB31XX(hid_device *hid, uint16_t address, uint8_t count, uin
 
   arg.count = count;
   memcpy(arg.data, data, count);
-  PMD_SendOutputReport(hid, (uint8_t *) &arg, sizeof(arg));
+  PMD_SendOutputReport(hid, (uint8_t *) &arg, argsize);
   return 0;
 }
 

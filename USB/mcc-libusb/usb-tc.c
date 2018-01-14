@@ -276,8 +276,9 @@ int usbWriteMemory_USBTC(hid_device *hid, uint16_t address, uint8_t type, uint8_
     uint16_t address;   // start address for the write (0x00-0xFF)
     uint8_t  type;      // 0 = main microcontroller  1 = isolated microcontroller
     uint8_t  count;     // number of bytes to write (59 max)
-    uint8_t  data[count];
+    uint8_t  data[60];
   } writeMemory;
+  size_t writeMemorySize = (count+3)*sizeof(uint8_t)+sizeof(uint16_t);
 
   if (address > 0xff) return (-1);
   if (count > 59) count = 59;
@@ -291,7 +292,7 @@ int usbWriteMemory_USBTC(hid_device *hid, uint16_t address, uint8_t type, uint8_
     writeMemory.data[i] = data[i];
   }
 
-  PMD_SendOutputReport(hid, (uint8_t *) &writeMemory,  sizeof(writeMemory));
+  PMD_SendOutputReport(hid, (uint8_t *) &writeMemory,  writeMemorySize);
 
   return 0;
 }

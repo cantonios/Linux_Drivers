@@ -30,7 +30,7 @@ HEADERS = pmd.h usb-500.h usb-1608G.h usb-20X.h usb-1208FS-Plus.h usb-1608FS-Plu
           bth-1208LS.h minilab-1008.h usb-1808.h
 OBJS = $(SRCS:.c=.o)   # same list as SRCS with extension changed
 CC=gcc
-CFLAGS+= -g -Wall -fPIC -O -I/usr/local/include/libusb-1.0 -L/usr/local/lib -lusb-1.0
+CFLAGS+= -g -Wall -fPIC -O -I/usr/local/include/libusb-1.0 -L/usr/local/lib -lusb-1.0 -lhidapi-libusb
 ifeq ($(shell uname), Darwin)
 	SONAME_FLAGS = -install_name
 	SHARED_EXT = dylib
@@ -200,13 +200,13 @@ dist:
 
 install:
 	-install -d /usr/local/lib
-	-install -c --mode=0755 ./libmccusb.a libmccusb.$(SHARED_EXT) /usr/local/lib
+	-install -c -m 0755 ./libmccusb.a libmccusb.$(SHARED_EXT) /usr/local/lib
+	-install -d /usr/local/include/libusb
+	-install -c -m 0644 ${HEADERS} /usr/local/include/libusb/
 	-/bin/ln -s /usr/local/lib/libmccusb.$(SHARED_EXT) /usr/lib/libmccusb.$(SHARED_EXT)
 	-/bin/ln -s /usr/local/lib/libmccusb.a /usr/lib/libmccusb.a
-	-install -d /usr/local/include/libusb
-	-install -c --mode=0644 ${HEADERS} /usr/local/include/libusb/
 
 uninstall:
 	-rm -f /usr/local/lib/libmccusb*
-	-rm -f /usr/lib/libmccusb*
 	-rm -rf /usr/local/include/libusb
+	-rm -f /usr/lib/libmccusb*

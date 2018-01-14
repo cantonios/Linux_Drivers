@@ -868,8 +868,9 @@ int usbWriteMemory_USB1408FS(libusb_device_handle *udev, uint16_t address, uint8
     uint8_t  reportID;
     uint8_t  address[2];
     uint8_t  count;
-    uint8_t  data[count];
+    uint8_t  data[60];
   } arg;
+  size_t argsize = (count+4)*sizeof(uint8_t);
 
   int ret;
   uint8_t request_type = LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE|LIBUSB_ENDPOINT_OUT;
@@ -887,7 +888,7 @@ int usbWriteMemory_USB1408FS(libusb_device_handle *udev, uint16_t address, uint8
   for ( i = 0; i < count; i++ ) {
     arg.data[i] = data[i];
   }
-  ret = libusb_control_transfer(udev, request_type, request, wValue, wIndex, (unsigned char*) &arg, sizeof(arg), 5000);
+  ret = libusb_control_transfer(udev, request_type, request, wValue, wIndex, (unsigned char*) &arg, argsize, 5000);
   if (ret < 0) {
     perror("Error in usbWriteMemory_USB1408FS: libusb_control_transfer error");
   }

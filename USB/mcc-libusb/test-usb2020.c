@@ -25,7 +25,6 @@
 #include <ctype.h>
 #include <math.h>
 #include <sys/types.h>
-#include <asm/types.h>
 
 #include "pmd.h"
 #include "usb-2020.h"
@@ -124,7 +123,6 @@ int main (int argc, char **argv)
 	do {
           printf("Enter a  number [0-0xf]: " );
           scanf("%x", &temp);
-          temp = temp;
           usbDLatchW_USB2020(device.udev, (uint16_t)temp);
 	  temp = usbDLatchR_USB2020(device.udev);
           input = (usbDPort_USB2020(device.udev) >> 4) & 0xf;

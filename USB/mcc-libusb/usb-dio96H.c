@@ -200,8 +200,9 @@ int usbWriteMemory_USBDIO96H(hid_device *hid, uint16_t address, uint8_t count, u
     uint8_t reportID;
     uint8_t address[2];
     uint8_t count;
-    uint8_t data[count];
+    uint8_t data[60];
   } arg;
+  size_t argsize = (count+4)*sizeof(uint8_t);
 
   if ( address <=0x7f ) return -1;
   if ( count > 59 ) count = 59;
@@ -214,7 +215,7 @@ int usbWriteMemory_USBDIO96H(hid_device *hid, uint16_t address, uint8_t count, u
   for ( i = 0; i < count; i++ ) {
     arg.data[i] = data[i];
   }
-  PMD_SendOutputReport(hid, (uint8_t *) &arg, sizeof(arg));
+  PMD_SendOutputReport(hid, (uint8_t *) &arg, argsize);
   return 0;
 }
 

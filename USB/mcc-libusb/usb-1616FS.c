@@ -343,7 +343,7 @@ int16_t usbAIn_USB1616FS(libusb_device_handle *udev, uint8_t channel, uint8_t ra
   int transferred;
 
   uint16_t data;
-  int16_t value = 0;
+  int32_t value = 0;
   uint8_t report[3];
 
   struct ain_t {
@@ -412,7 +412,7 @@ int16_t usbAIn_USB1616FS(libusb_device_handle *udev, uint8_t channel, uint8_t ra
     value *= (-1);
   }
 
-  return value;
+  return (int16_t)value;
 }
 
 void usbAInStop_USB1616FS(libusb_device_handle *udev)
@@ -513,7 +513,7 @@ int usbAInScan_USB1616FS(libusb_device_handle *udev, uint8_t lowchannel, uint8_t
   int transferred;
   int timeout = FS_DELAY;
 
-  int16_t value;
+  int32_t value;
   uint16_t uvalue;
   uint8_t gain;    
 
@@ -657,7 +657,7 @@ cont:
       value = (0x8000 - value);
       value *= (-1);
     }
-    sdata[i] = value;
+    sdata[i] = (int16_t)value;
     chan++;                    // each sample is one channel higher.
     if (chan > highchannel) {  // wrap around which is one scan.
       chan = lowchannel;
@@ -924,8 +924,9 @@ int usbWriteMemory_USB1616FS(libusb_device_handle *udev, uint16_t address, uint8
     uint8_t reportID;
     uint8_t address[2];
     uint8_t count;
-    uint8_t data[count];
+    uint8_t data[60];
   } arg;
+  size_t argsize = (count+4)*sizeof(uint8_t);
 
   int ret;
   uint8_t request_type = LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE|LIBUSB_ENDPOINT_OUT;
@@ -945,7 +946,7 @@ int usbWriteMemory_USB1616FS(libusb_device_handle *udev, uint16_t address, uint8
     arg.data[i] = data[i];
   }
 
-  ret = libusb_control_transfer(udev, request_type, request, wValue, wIndex, (unsigned char*) &arg, sizeof(arg), 5000);
+  ret = libusb_control_transfer(udev, request_type, request, wValue, wIndex, (unsigned char*) &arg, argsize, 5000);
   if (ret < 0) {
     perror("Error in usbWriteMemory_USB1616FS: libusb_control_transfer error");
   }

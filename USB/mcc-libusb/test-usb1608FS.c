@@ -47,7 +47,7 @@ int main (int argc, char **argv)
   int temp, i,j;
   int ch;
   uint8_t gainArray[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-  int16_t sdata[1024];
+  int32_t sdata[1024];
   uint16_t data[2048];
   int count;
   int options;
@@ -209,7 +209,7 @@ start:
 	  sdata[i] = (0x8000 - sdata[i]);
 	  sdata[i] *= (-1);
 	}
-	printf("raw data = %#x   data[%d] = %#hx  %.4fV\n", data[i], i, sdata[i], volts_USB1608FS(gain, sdata[i]));
+	printf("raw data = %#x   data[%d] = %#hx  %.4fV\n", data[i], i, (int16_t)sdata[i], volts_USB1608FS(gain, (int16_t)sdata[i]));
       }
       break;
     case 'i':

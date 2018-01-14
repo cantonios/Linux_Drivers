@@ -66,14 +66,15 @@ int main (int argc, char **argv)
 
   if ((hid = hid_open(MCC_VID, USB1208LS_PID, NULL)) >  0) {
     printf("USB-1208LS Device is found!\n");
+    printf("%d",(int)hid);
   } else {
     fprintf(stderr, "USB-1208LS not found.\n");
     exit(1);
   }
 
   /* config mask 0x01 means all inputs */
-  usbDConfigPort_USB1208LS(hid, DIO_PORTB, DIO_DIR_IN);
   usbDConfigPort_USB1208LS(hid, DIO_PORTA, DIO_DIR_OUT);
+  usbDConfigPort_USB1208LS(hid, DIO_PORTB, DIO_DIR_IN);
   usbDOut_USB1208LS(hid, DIO_PORTA, 0x0);
   usbDOut_USB1208LS(hid, DIO_PORTA, 0x0);
   
